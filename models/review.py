@@ -1,10 +1,22 @@
 #!/usr/bin/python3
 """ Review module for the HBNB project """
-from models.base_model import BaseModel
+
+from sqlalchemy import Column, String, ForeignKey
+from sqlachemy.ext.declarative import declarative_base
+from models.base_model import BaseModel, Base
 
 
 class Review(BaseModel):
-    """ Review classto store review information """
-    place_id = ""
-    user_id = ""
-    text = ""
+    """
+    Review classto store review information
+
+    Attributes:
+        __tablename__ (str): the name of the mysql table
+        text (sqlalchemy.Column): the review text body
+        place_id (sqlalchemy.Column): the id of the place to be reviewed
+        user_id (sqlalchemy.Column): the id of the user posting the review
+    """
+    __tablename__ = 'reviews'
+    text = Column(String(1024), nullable=False)
+    place_id = Column(String(60), nullable=False, ForeignKey='places.id')
+    user_id = Column(String(60), nullable=False, ForeignKey='users.id')
