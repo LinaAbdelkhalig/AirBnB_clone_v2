@@ -59,7 +59,8 @@ class Place(BaseModel, Base):
         """Returns the list of amenity instances"""
         from models import storage
         a_objects = storage.all(Amenity)
-        return [a for a in a_objects if a.id in self.amenity_ids]
+        return [a for a in a_objects if hasattr(a, 'id') and
+                a.id in self.amenity_ids]
 
     @amenities.setter
     def amenities(self, value):
