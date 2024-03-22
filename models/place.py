@@ -5,9 +5,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from models.amenity import Amenity
+from models.review import Review
 
-
-place_amenities = Table('place_amenity', Base.metadata,
+place_amenity = Table('place_amenity', Base.metadata,
                         Column('place_id',
                                String(60),
                                ForeignKey('places.id'),
@@ -53,17 +53,24 @@ class Place(BaseModel, Base):
                              viewonly=False, backref="place_amenities")
     amenity_ids = []
 
-    # getter attribute here
-    @property
-    def amenities(self):
-        """Returns the list of amenity instances"""
-        from models import storage
-        a_objects = storage.all(Amenity)
-        return [a for a in a_objects if hasattr(a, 'id') and
-                a.id in self.amenity_ids]
+    if getenv('HBNB_TYPE_STORAGE') != 'db':
+        @property
+        def reviews(self):
+            """Returns the list of reviews"""
+            from models import storage
+            review_objs = storage.all(Review)
+            return [r for r in review_objs.values() if r.place_id == self.id]
 
-    @amenities.setter
-    def amenities(self, value):
-        """appends an Amenity.id to amenity_ids"""
-        if isinstance(value, Amenity) and value.id not in self.amenity_ids:
-            self.amenity_ids.append(value.id)
+        @property
+        def amenities(self):
+            """Returns the list of amenity instances"""
+            from models import storage
+            a_objects = storage.all(Amenity)
+            return [a for a in a_objects if hasattr(a, 'id') and
+                    a.id in self.amenity_ids]
+
+        @amenities.setter
+        def amenities(self, value):
+            """appends an Amenity.id to amenity_ids"""
+            if isinstance(value, Amenity) and value.id not in self.amenity_ids:
+                self.amenity_ids.append(value.id)
