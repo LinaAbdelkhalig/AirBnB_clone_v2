@@ -2,7 +2,13 @@
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from models.amenity import Amenity
 from models.base_model import Base
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
 class DBStorage:
@@ -38,12 +44,12 @@ class DBStorage:
         if cls:
             if type(cls) == str:
                 cls = eval(cls)
-            objs = self.__session.query(cls)
+            objs = self.__session.query(cls).all()
             for obj in objs:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 dic[key] = obj
         else:
-            #classes = [Amenity, City, Place, Review, State, User]
+            # classes = [Amenity, City, Place, Review, State, User]
             classes = [City, State]
             for c in classes:
                 objs = self.__session.query(c).all()
@@ -64,7 +70,6 @@ class DBStorage:
         """Deletes an object"""
         if obj:
             self.__session.delete(obj)
-            self.save()
 
     def reload(self):
         """Sets the session"""

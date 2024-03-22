@@ -3,11 +3,10 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 
 
-class Amenity(BaseModel):
-    
+class Amenity(BaseModel, Base):
     """
     The amenity class
 
@@ -15,7 +14,7 @@ class Amenity(BaseModel):
         __tablename__ (str): the name of the table in the db
         name (sqlalchemy.Column): the name of the amenity
     """
-
     __tablename__ = 'amenities'
     name = Column(String(128), nullable=False)
-    place_amenities = relationship("Place", secondary=place_amenity, viewonly=False)
+    # place_amenities = relationship("Place", secondary=place_amenity,
+    #                                 viewonly=False)
