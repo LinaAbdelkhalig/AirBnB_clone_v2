@@ -48,7 +48,6 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float)
     longitude = Column(Float)
-    # it said this is for DBStorage idk what that means ???
     reviews = relationship("Review", backref="place", cascade="all, delete")
     amenities = relationship("Amenity", secondary="place_amenity",
                              viewonly=False, backref="place_amenities")
