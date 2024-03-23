@@ -9,6 +9,8 @@ import os
 class test_fileStorage(unittest.TestCase):
     """ Class to test the file storage method """
 
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE' == 'db',
+                     'Accessing FileStorage while the engine is db')
     def setUp(self):
         """ Set up test environment """
         del_list = []
@@ -33,7 +35,7 @@ class test_fileStorage(unittest.TestCase):
         new = BaseModel()
         for obj in storage.all().values():
             temp = obj
-        self.assertTrue(temp is obj)
+            self.assertTrue(temp is obj)
 
     def test_all(self):
         """ __objects is properly returned """
@@ -100,10 +102,14 @@ class test_fileStorage(unittest.TestCase):
         _id = new.to_dict()['id']
         for key in storage.all().keys():
             temp = key
-        self.assertEqual(temp, 'BaseModel' + '.' + _id)
+            self.assertEqual(temp, 'BaseModel' + '.' + _id)
 
     def test_storage_var_created(self):
         """ FileStorage object storage created """
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+
+if __name__ == "__main__":
+    unittest.main()
