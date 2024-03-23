@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 
 
-class TestConsole(unittest.TestCase):
+class test_console(unittest.TestCase):
     """Tests the console"""
     def setUp(self):
         """Setup"""
@@ -23,6 +23,7 @@ class TestConsole(unittest.TestCase):
         """Reset"""
         pass
 
+    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') = 'db', 'Not FileStorage')
     def test_empty_line(self):
         """Tests empty lines"""
         with patch('sys.stdout', new=StringIO()) as f:

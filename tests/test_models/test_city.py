@@ -7,6 +7,7 @@ from models.city import City
 
 
 class test_City(test_basemodel):
+<<<<<<< HEAD
     """Test City"""
 
     def __init__(self, *args, **kwargs):
