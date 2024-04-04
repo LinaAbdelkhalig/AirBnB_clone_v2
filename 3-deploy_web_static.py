@@ -40,7 +40,8 @@ def do_deploy(archive_path):
         folder = "/data/web_static/releases/"
 
         # upload the archive to /tmp/
-        put(archive_path, "/tmp/")
+        put(archive_path, "/tmp/{}".format(f))
+        run("rm -rf {}{}/".format(folder, fn))
         # create the directory and uncompress to the web server
         run("mkdir -p {}{}/".format(folder, fn))
         run("tar -xzf /tmp/{} -C {}{}/".format(f, folder, fn))
