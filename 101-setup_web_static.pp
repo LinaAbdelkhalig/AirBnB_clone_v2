@@ -1,72 +1,41 @@
 # sets up your web servers for the deployment of web_static
 
-exec { 'update':
-  command => '/usr/bin/apt-get -y update',
-  path    => ['/usr/bin', '/usr/sbin'],
+exec { 'apt-get-update':
+  command => '/usr/bin/env apt-get -y update',
 }
 
-exec { 'upgrade':
-  command => '/usr/bin/apt-get -y upgrade',
-  path    => ['/usr/bin', '/usr/sbin'],
-  require => Exec['update'],
+exec { 'apt-get-upgrade':
+  command => '/usr/bin/env apt-get -y upgrade',
 }
 
 package { 'nginx':
   ensure   => 'installed',
-  require => Exec['upgrade'],
 }
 
-file { '/data':
-  ensure   => directory,
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'test folder':
+  command => '/usr/bin/env mkdir -p /data/web_static/releases/test/',
 }
 
-file { '/data/web_static':
-  ensure   => directory,
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'shared folder':
+  command => '/usr/bin/env mkdir -p /data/web_static/shared/',
 }
 
-file { '/data/web_static/releases':
-  ensure   => 'directory'  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'index html':
+  command => '/usr/bin/env echo "Welcome to AirBnB" > /data/web_static/releases/test/index.html',
 }
 
-file { '/data/web_static/releases/test':
-  ensure   => 'directory',
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'ln -s':
+  command => '/usr/bin/env ln -sf /data/web_static/releases/test /data/web_static/current',
 }
 
-file { '/data/web_static/shared':
-  ensure   => 'directory',
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'nginx conf':
+  command => '/usr/bin/env sed -i "/listen 80 default_server/a location /hbnb_static/ { alias /data/web_static/current/;}" /etc/nginx/sites-available/default',
 }
 
-file { '/data/web_static/releases/test/index.html':
-  ensure   => 'present',
-  content  => '',
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
+exec {'chown:':
+  command => '/usr/bin/env chown -R ubuntu:ubuntu /data',
 }
 
-file { '/data/web_static/current':
-  ensure   => 'link',
-  target   => '/data/web_static/releases/test',
-  owner    => 'ubuntu',
-  group    => 'ubuntu',
-}
-
-exec { 'nginx_config':
-  command => "/bin/sed -i '38i\\tlocation /hbnb_static {\\n\\t\\talias /data/web_static/current;\\n\\t}\\n' /etc/nginx/sites-available/default",
-  path    => ['/bin', '/usr/sbin'],
-  require => Package['nginx'],
-}
-
-service { 'nginx':
-  ensure    => running,
-  enable    => true,
-  subscribe => Exec['nginx_config'],
+exec {'service':
+  command => '/usr/bin/env service nginx restart',
 }
