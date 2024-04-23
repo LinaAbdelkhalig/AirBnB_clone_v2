@@ -27,12 +27,12 @@ def hello_hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def hello_c(text):
+def c_route(text):
     """
     this function displays "C" followed by the value of <text>
     when routed to /c/<text>
     """
-    return "C" + text.replace("_", " ")
+    return "C " + text.replace("_", " ")
 
 
 if __name__ == "__main__":
