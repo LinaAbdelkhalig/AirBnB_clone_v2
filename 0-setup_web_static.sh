@@ -1,30 +1,27 @@
 #!/usr/bin/env bash
-# Sets up the web servers for the deployment of web_static
-
-# update & upgrade
-sudo apt-get -y update
-sudo apt-get -y upgrade
-
-# install nginx
+# script that sets up web servers for the deployment of web_static
+sudo apt-get update
 sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
 
-# create directories
-# /data/web_static/shared/
-# /data/web_static/releases/
-# /data/web_static/releases/test/
-sudo mkdir -p /data/web_static/releases/test /data/web_static/shared
+sudo mkdir -p /data/
+sudo mkdir -p /data/web_static/
+sudo mkdir -p /data/web_static/releases/
+sudo mkdir -p /data/web_static/shared/
+sudo mkdir -p /data/web_static/releases/test/
+sudo touch /data/web_static/releases/test/index.html
+sudo echo "<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>" | sudo tee /data/web_static/releases/test/index.html
 
-# create /data/web_static/releases/test/index.html containing tests for Nginx configration
-echo "" | sudo tee /data/web_static/releases/test/index.html
+sudo ln -s -f /data/web_static/releases/test/ /data/web_static/current
 
-# create symbolic link /data/web_static/current linked to the /data/web_static/releases/test/
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+sudo chown -R ubuntu:ubuntu /data/
 
-# give ownership of /data/ to ubuntu user AND group
-sudo chown -hR ubuntu:ubuntu /data/
+sudo sed -i '/listen 80 default_server/a location /hbnb_static { alias /data/web_static/current/;}' /etc/nginx/sites-enabled/default
 
-# update Nginx config to serve /data/web_static/current/ to hbnb_static
-sudo sed -i '38i\\tlocation /hbnb_static {\n\t\talias /data/web_static/current;\n\t}\n' /etc/nginx/sites-available/default
-
-# restart nginx
 sudo service nginx restart
