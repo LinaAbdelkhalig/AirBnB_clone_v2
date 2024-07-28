@@ -50,7 +50,7 @@ def python_route(text):
 def number_route(n):
     """
     this function displays n is a number
-    only if n is an int when routed to 
+    only if n is an int when routed to
     /number/n
     """
     return str(n) + " is a number"
