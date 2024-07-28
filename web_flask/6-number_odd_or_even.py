@@ -1,4 +1,4 @@
-g!/usr/bin/python3
+#!/usr/bin/python3
 """
 this script start a flask web app that listens on port 0.0.0.0
 port 5000
@@ -64,7 +64,7 @@ def number_template(n):
     return render_template('5-number.html', n=n)
 
 
-@app.route('/number_odd_or_even/<int:n>'), strict_slashes=False)
+@app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
 def number_oddeven(n):
     """
     this function displays a different html page if n is int
